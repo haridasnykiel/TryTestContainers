@@ -16,12 +16,8 @@ public class WeatherRepository
     {
         await using var connection = new SqlConnection(_config.ConnectionString);
 
-        var id = await connection.QueryAsync<int>("select Id from WeatherDetails");
-
-        var max = id.Max() + 1;
-
         var insert =
-            $"insert into WeatherDetails (Id, Date, TemperatureC, Summary) values ({max}, '{forecast.Date:s}', {forecast.TemperatureC}, '{forecast.Summary}')";
+            $"insert into Weather (Date, TemperatureC, Summary) values ('{forecast.Date:s}', {forecast.TemperatureC}, '{forecast.Summary}')";
         
         await connection.ExecuteAsync(insert);
     }
@@ -31,7 +27,7 @@ public class WeatherRepository
     {
         using var connection = new SqlConnection(_config.ConnectionString);
 
-        var results =  await connection.QueryAsync<WeatherForecast>("select * from weather");
+        var results =  await connection.QueryAsync<WeatherForecast>("select * from Weather");
 
         return results;
     }
