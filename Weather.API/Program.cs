@@ -1,5 +1,6 @@
 using Weather.API;
 using Weather.API.Repository;
+using Weather.API.Repository.DbConnection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,9 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var config = new Config(builder.Configuration);
-builder.Services.AddSingleton(config);
+var dbConnectionFactory = new DbConnectionFactory(config.ConnectionString);
 
-builder.Services.AddSingleton(new WeatherRepository(config));
+builder.Services.AddSingleton<IConfig>(config);
+builder.Services.AddSingleton<IDbConnectionFactory>(dbConnectionFactory);
+builder.Services.AddSingleton<IWeatherRepository, WeatherRepository>();
 
 var app = builder.Build();
 

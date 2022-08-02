@@ -1,6 +1,6 @@
 ﻿namespace Weather.API;
 
-public class Config
+public class Config : IConfig
 {
     private IConfiguration _configuration;
     

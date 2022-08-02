@@ -2,10 +2,10 @@ using Xunit;
 
 namespace Weather.API.IntegrationTests.Tests;
 
-public class UnitTest1
+public class AddWeatherTests
 {
     [Fact]
-    public void Test1()
+    public void AddOneWeatherUpdate()
     {
     }
 }

@@ -1,20 +1,21 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
+using Weather.API.Repository.DbConnection;
 
 namespace Weather.API.Repository;
 
-public class WeatherRepository
+public class WeatherRepository : IWeatherRepository
 {
-    private readonly Config _config;
+    private readonly IDbConnectionFactory _dbConnectionFactory;
     
-    public WeatherRepository(Config config)
+    public WeatherRepository(IDbConnectionFactory dbConnectionFactory)
     {
-        _config = config;
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
     public async Task AddWeather(WeatherForecast forecast)
     {
-        await using var connection = new SqlConnection(_config.ConnectionString);
+        using var connection = _dbConnectionFactory.Create();
 
         var insert =
             $"insert into Weather (Date, TemperatureC, Summary) values ('{forecast.Date:s}', {forecast.TemperatureC}, '{forecast.Summary}')";
@@ -25,7 +26,7 @@ public class WeatherRepository
     // need a database project
     public async Task<IEnumerable<WeatherForecast>> GetAll()
     {
-        using var connection = new SqlConnection(_config.ConnectionString);
+        using var connection = _dbConnectionFactory.Create();
 
         var results =  await connection.QueryAsync<WeatherForecast>("select * from Weather");
 
