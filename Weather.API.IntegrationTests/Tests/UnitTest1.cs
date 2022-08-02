@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Weather.API.IntegrationTests;
+namespace Weather.API.IntegrationTests.Tests;
 
 public class UnitTest1
 {
