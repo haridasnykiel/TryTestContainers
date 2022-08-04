@@ -14,7 +14,7 @@ public class WeatherForecastController : ControllerBase
         _repository = repository;
     }
 
-    [HttpPost]
+    [HttpPost("Add")]
     public async Task AddWeather([FromBody] Forecast forecast)
     {
         await _repository.AddWeather(new WeatherForecast
@@ -25,7 +25,7 @@ public class WeatherForecastController : ControllerBase
         });
     }
     
-    [HttpGet]
+    [HttpGet("GetAll")]
     public async Task<IEnumerable<WeatherForecast>> GetAll()
     {
         return await _repository.GetAll();

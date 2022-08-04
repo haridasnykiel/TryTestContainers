@@ -1,10 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Weather.API.Repository.DbConnection;
@@ -15,10 +15,22 @@ namespace Weather.API.IntegrationTests;
 public class ClientSetup : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly TestcontainersContainer _testcontainersContainer =
-        new TestcontainersBuilder<TestcontainersContainer>()
-            .WithImage("mcr.microsoft.com/mssql/server:2019-latest")
-            //.WithEnvironment()
+        new TestcontainersBuilder<MsSqlTestcontainer>()
+            .WithDatabase(new MsSqlTestcontainerConfiguration
+            {
+                Password = "Test1!!"
+            })
+            .WithPortBinding(1433, 1433)
             .Build();
+
+    public ClientSetup()
+    {
+        WithWebHostBuilder(ConfigureWebHost);
+        Client = CreateClient();
+    }
+    
+    public HttpClient Client { get; }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(x =>
@@ -31,13 +43,13 @@ public class ClientSetup : WebApplicationFactory<Program>, IAsyncLifetime
         base.ConfigureWebHost(builder);
     }
 
-    public Task InitializeAsync()
+    public async Task InitializeAsync()
     {
-        return Task.CompletedTask;
+        await _testcontainersContainer.StartAsync();
     }
 
-    public Task DisposeAsync()
+    public new async Task DisposeAsync()
     {
-        return Task.CompletedTask;
+        await _testcontainersContainer.DisposeAsync();
     }
 }
