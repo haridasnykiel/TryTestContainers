@@ -9,10 +9,9 @@ public class WeatherClient
 {
     private HttpClient _client;
 
-    public WeatherClient(ClientSetup clientSetup)
+    public WeatherClient(HttpClient client)
     {
-        //var clientSetup = new ClientSetup();
-        _client = clientSetup.Client;
+        _client = client;
     }
 
     public async Task<IEnumerable<WeatherForecast>?> GetAllWeathers()
@@ -24,6 +23,4 @@ public class WeatherClient
     {
         await _client.PostAsJsonAsync("WeatherForecast/Add", forecast);
     }
-
-
 }

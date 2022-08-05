@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
@@ -9,13 +10,12 @@ public class AddWeatherTests
 {
     private readonly Faker<IntegrationTests.Models.WeatherForecast> _faker;
     private readonly WeatherClient _client;
-    public AddWeatherTests()
+    public AddWeatherTests(ClientFactory clientFactory)
     {
         _faker = new Faker<Models.WeatherForecast>();
-        var clientSetup = new ClientSetup();
-        _client = new WeatherClient(clientSetup);
+        _client = new WeatherClient(clientFactory.CreateClient());
     }
-    
+
     [Fact]
     public async Task AddOneWeatherUpdate()
     {

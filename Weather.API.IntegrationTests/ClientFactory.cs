@@ -6,13 +6,12 @@ using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Weather.API.Repository.DbConnection;
 using Xunit;
 
 namespace Weather.API.IntegrationTests;
 
-public class ClientSetup : WebApplicationFactory<Program>, IAsyncLifetime
+public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
     private readonly TestcontainersContainer _testcontainersContainer =
         new TestcontainersBuilder<MsSqlTestcontainer>()
@@ -23,14 +22,6 @@ public class ClientSetup : WebApplicationFactory<Program>, IAsyncLifetime
             .WithPortBinding(1433, 1433)
             .Build();
 
-    public ClientSetup()
-    {
-        WithWebHostBuilder(ConfigureWebHost);
-        Client = CreateClient();
-    }
-    
-    public HttpClient Client { get; }
-    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(x =>
