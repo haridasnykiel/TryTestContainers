@@ -1,4 +1,3 @@
-using System.Configuration;
 using System.Threading.Tasks;
 using Bogus;
 using FluentAssertions;
@@ -6,7 +5,7 @@ using Xunit;
 
 namespace Weather.API.IntegrationTests.Tests;
 
-public class AddWeatherTests
+public class AddWeatherTests : IClassFixture<ClientFactory>
 {
     private readonly Faker<IntegrationTests.Models.WeatherForecast> _faker;
     private readonly WeatherClient _client;

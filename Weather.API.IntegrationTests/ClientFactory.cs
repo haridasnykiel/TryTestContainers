@@ -17,9 +17,10 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
         new TestcontainersBuilder<MsSqlTestcontainer>()
             .WithDatabase(new MsSqlTestcontainerConfiguration
             {
-                Password = "Test1!!"
+                Password = "Test1!!!"
             })
             .WithPortBinding(1433, 1433)
+            .WithName("TestSql")
             .Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -28,7 +29,7 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
         {
             x.RemoveAll(typeof(IDbConnectionFactory));
             x.TryAddSingleton<IDbConnectionFactory>(
-                new DbConnectionFactory("Server=localhost;Initial Catalog=TestWeatherDatabase;User Id=sa;Password=Test1!!;TrustServerCertificate=true;"));
+                new DbConnectionFactory("Server=localhost;Initial Catalog=TestWeatherDatabase;User Id=sa;Password=Test1!!!;TrustServerCertificate=true;"));
         });
         
         base.ConfigureWebHost(builder);
