@@ -13,12 +13,17 @@ namespace Weather.API.IntegrationTests;
 
 public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
+    private static readonly ImageFromDockerfileBuilder _image = new();
+    
+    // Need to figure out how to get the docker file into the bin dir of the tests.
     private readonly TestcontainersContainer _testcontainersContainer =
-        new TestcontainersBuilder<MsSqlTestcontainer>()
-            .WithDatabase(new MsSqlTestcontainerConfiguration
-            {
-                Password = "Test1!!!"
-            })
+        new TestcontainersBuilder<TestcontainersContainer>()
+            .WithImage(_image
+                .WithDockerfile("./Weather.Database/Dockerfile")
+                .WithName("database")
+                .Build()
+                .GetAwaiter()
+                .GetResult())
             .WithPortBinding(1433, 1433)
             .WithName("TestSql")
             .Build();
