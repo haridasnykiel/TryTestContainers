@@ -1,7 +1,5 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,13 +17,13 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
     private readonly TestcontainersContainer _testcontainersContainer =
         new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(_image
-                .WithDockerfile("./Weather.Database/Dockerfile")
-                .WithName("database")
+                .WithDockerfileDirectory("../../../../Weather.Database")
+                .WithBuildArgument("PASSWORD", "Passw0rd!!")
                 .Build()
                 .GetAwaiter()
                 .GetResult())
             .WithPortBinding(1433, 1433)
-            .WithName("TestSql")
+            .WithName("mydatabase")
             .Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -34,7 +32,7 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
         {
             x.RemoveAll(typeof(IDbConnectionFactory));
             x.TryAddSingleton<IDbConnectionFactory>(
-                new DbConnectionFactory("Server=localhost;Initial Catalog=TestWeatherDatabase;User Id=sa;Password=Test1!!!;TrustServerCertificate=true;"));
+                new DbConnectionFactory("Server=localhost;Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;"));
         });
         
         base.ConfigureWebHost(builder);
