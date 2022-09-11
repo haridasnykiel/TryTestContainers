@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using Weather.API.Repository.DbConnection;
 
-namespace TryTestContiners.Repository.DbConnection;
+namespace Weather.API.Repository.DbConnection;
 
 public class DbConnectionFactory : IDbConnectionFactory
 {

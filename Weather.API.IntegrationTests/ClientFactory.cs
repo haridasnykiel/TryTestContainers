@@ -5,7 +5,6 @@ using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using TryTestContiners.Repository.DbConnection;
 using Weather.API.Repository.DbConnection;
 using Xunit;
 
@@ -13,24 +12,31 @@ namespace Weather.API.IntegrationTests;
 
 public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
+    private static readonly Port _port = new();
     private static readonly ImageFromDockerfileBuilder _image = new();
 
-    private IDbConnectionFactory _dbConnectionFactory = new DbConnectionFactory(
-        "Server=localhost;Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
+    private readonly IDbConnectionFactory _dbConnectionFactory;
     
     // Need to figure out how to get the docker file into the bin dir of the tests.
-    private readonly TestcontainersContainer _testcontainersContainer =
+    private readonly TestcontainersContainer _testcontainersContainer;
+
+    public ClientFactory()
+    {
+        _dbConnectionFactory = new DbConnectionFactory(
+            $"Server=localhost,{_port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
+        
+        _testcontainersContainer =
         new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(_image
-                .WithDockerfileDirectory(CommonDirectoryPath.BuildRoot, "../Weather.Database")
+                .WithDockerfileDirectory("../../../../Weather.Database")
                 .WithBuildArgument("PASSWORD", "Passw0rd!!")
                 .Build()
                 .GetAwaiter()
                 .GetResult())
-            .WithPortBinding(1433, 1433)
-            .WithName("mydatabase")
+            .WithPortBinding(_port.Number, 1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

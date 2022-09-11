@@ -8,13 +8,13 @@ namespace Weather.API.IntegrationTests.Tests;
 
 public class AddWeatherTests : IClassFixture<ClientFactory>
 {
-    private readonly Faker<IntegrationTests.Models.WeatherForecast> _faker;
+    private readonly Faker<Models.AddWeatherForecast> _faker;
     private readonly WeatherClient _client;
     private readonly ClientFactory _clientFactory;
     public AddWeatherTests(ClientFactory clientFactory)
     {
         _clientFactory = clientFactory;
-        _faker = new Faker<Models.WeatherForecast>().Rules((r, f) =>
+        _faker = new Faker<Models.AddWeatherForecast>().Rules((r, f) =>
         {
             f.TemperatureC = r.System.Random.Int();
             f.Date = r.Date.Future().Date;
@@ -28,11 +28,11 @@ public class AddWeatherTests : IClassFixture<ClientFactory>
     public async Task AddOneWeatherUpdate()
     {
         var forecast = _faker.Generate();
-        var expected = new List<IntegrationTests.Models.WeatherForecast> { forecast };
+        var expected = new List<IntegrationTests.Models.AddWeatherForecast> { forecast };
 
-        await _client.AddWeather(forecast);
+        await _client.AddWeatherUpdate(forecast);
 
-        var result = await _client.GetAllWeathers();
+        var result = await _client.GetAllWeatherUpdates();
 
         result.Should().NotBeEmpty();
         result.Should().BeEquivalentTo(expected);
@@ -45,12 +45,12 @@ public class AddWeatherTests : IClassFixture<ClientFactory>
     {
         var forecastFirst = _faker.Generate();
         var forecastSecond = _faker.Generate();
-        var expected = new List<IntegrationTests.Models.WeatherForecast> {forecastFirst, forecastSecond};
+        var expected = new List<IntegrationTests.Models.AddWeatherForecast> {forecastFirst, forecastSecond};
 
-        await _client.AddWeather(forecastFirst);
-        await _client.AddWeather(forecastSecond);
+        await _client.AddWeatherUpdate(forecastFirst);
+        await _client.AddWeatherUpdate(forecastSecond);
 
-        var result = await _client.GetAllWeathers();
+        var result = await _client.GetAllWeatherUpdates();
 
         result.Should().NotBeEmpty();
         result.Should().BeEquivalentTo(expected);
