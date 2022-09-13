@@ -12,9 +12,6 @@ namespace Weather.API.IntegrationTests;
 
 public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    private static readonly Port _port = new();
-    private static readonly ImageFromDockerfileBuilder _image = new();
-
     private readonly IDbConnectionFactory _dbConnectionFactory;
     
     // Need to figure out how to get the docker file into the bin dir of the tests.
@@ -22,20 +19,25 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 
     public ClientFactory()
     {
+        var port = new Port();
+        var imageFromDockerfileBuilder = new ImageFromDockerfileBuilder();
+        
         _dbConnectionFactory = new DbConnectionFactory(
-            $"Server=localhost,{_port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
+            $"Server=localhost,{port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
+        
+        var image = imageFromDockerfileBuilder
+            .WithDockerfileDirectory("../../../../Weather.Database")
+            .WithBuildArgument("PASSWORD", "Passw0rd!!")
+            .Build()
+            .GetAwaiter()
+            .GetResult();
         
         _testcontainersContainer =
-        new TestcontainersBuilder<TestcontainersContainer>()
-            .WithImage(_image
-                .WithDockerfileDirectory("../../../../Weather.Database")
-                .WithBuildArgument("PASSWORD", "Passw0rd!!")
-                .Build()
-                .GetAwaiter()
-                .GetResult())
-            .WithPortBinding(_port.Number, 1433)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-            .Build();
+            new TestcontainersBuilder<TestcontainersContainer>()
+                .WithImage(image)
+                .WithPortBinding(port.Number, 1433)
+                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
+                .Build();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

@@ -8,14 +8,12 @@ namespace Weather.API.IntegrationTests.Tests;
 
 public class GetWeatherTests : IClassFixture<ClientFactory>
 {
-    private readonly Faker<Models.AddWeatherForecast> _faker;
+    private readonly Faker<AddWeatherForecast> _faker;
     private readonly WeatherClient _client;
-    private readonly ClientFactory _clientFactory;
-    
+
     public GetWeatherTests(ClientFactory clientFactory)
     {
-        _clientFactory = clientFactory;
-        _faker = new Faker<Models.AddWeatherForecast>().Rules((r, f) =>
+        _faker = new Faker<AddWeatherForecast>().Rules((r, f) =>
         {
             f.TemperatureC = r.System.Random.Int();
             f.Date = r.Date.Future().Date;
