@@ -20,17 +20,11 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
     public ClientFactory()
     {
         var port = new Port();
-        var imageFromDockerfileBuilder = new ImageFromDockerfileBuilder();
-        
+
         _dbConnectionFactory = new DbConnectionFactory(
             $"Server=localhost,{port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
-        
-        var image = imageFromDockerfileBuilder
-            .WithDockerfileDirectory("../../../../Weather.Database")
-            .WithBuildArgument("PASSWORD", "Passw0rd!!")
-            .Build()
-            .GetAwaiter()
-            .GetResult();
+
+        var image = Image.Get();
         
         _testcontainersContainer =
             new TestcontainersBuilder<TestcontainersContainer>()
