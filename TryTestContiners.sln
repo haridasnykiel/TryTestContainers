@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.Database", "Weather
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.API.IntegrationTests", "Weather.API.IntegrationTests\Weather.API.IntegrationTests.csproj", "{027E8317-DECD-4990-A66E-B91BC8CB658E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weather.API.IntegrationTests.SF", "Weather.API.IntegrationTests.SF\Weather.API.IntegrationTests.SF.csproj", "{6326E538-5723-4CC9-A87B-A38AD7F26513}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{027E8317-DECD-4990-A66E-B91BC8CB658E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{027E8317-DECD-4990-A66E-B91BC8CB658E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{027E8317-DECD-4990-A66E-B91BC8CB658E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6326E538-5723-4CC9-A87B-A38AD7F26513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6326E538-5723-4CC9-A87B-A38AD7F26513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6326E538-5723-4CC9-A87B-A38AD7F26513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6326E538-5723-4CC9-A87B-A38AD7F26513}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

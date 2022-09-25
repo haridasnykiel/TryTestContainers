@@ -1,0 +1,7 @@
+namespace Weather.API.IntegrationTests.SF.Models;
+
+public class GetWeatherForecast
+{
+    public DateTime Date { get; set; }
+    public int TemperatureC { get; set; }
+}
