@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using BoDi;
+using FluentAssertions;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Weather.API.IntegrationTests.SF.Models;
@@ -7,14 +8,14 @@ using Weather.API.IntegrationTests.SF.SystemSetup;
 namespace Weather.API.IntegrationTests.SF.Definitions;
 
 [Binding]
-public sealed class AddWeatherUpdatesDefinitions
+public sealed class WeatherUpdatesDefinitions
 {
-    private WeatherClient _weatherClient;
-    private ScenarioContext _context;
+    private readonly WeatherClient _weatherClient;
+    private readonly ScenarioContext _context;
 
-    public AddWeatherUpdatesDefinitions(WeatherClient weatherClient, ScenarioContext context)
+    public WeatherUpdatesDefinitions(IObjectContainer objectContainer, FeatureContext featureContext, ScenarioContext context)
     {
-        _weatherClient = weatherClient;
+        _weatherClient = objectContainer.Resolve<WeatherClient>(featureContext.FeatureInfo.Title);
         _context = context;
     }
 
@@ -67,5 +68,14 @@ public sealed class AddWeatherUpdatesDefinitions
 
             result.Should().NotBeNull();
         }
+    }
+
+    [When(@"a request for a weather update with:")]
+    public async Task WhenARequestForAWeatherUpdateWith(Table table)
+    {
+        var request = table.CreateInstance<GetWeatherForecast>();
+
+        var response = await _weatherClient.GetWeatherUpdate(request);
+        _context.Add("forecasts", new List<WeatherForecast>{response});
     }
 }

@@ -12,27 +12,12 @@ namespace Weather.API.IntegrationTests.SF.SystemSetup;
 public class ClientFactory : WebApplicationFactory<IApiMarker>
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
-    
-    // Need to figure out how to get the docker file into the bin dir of the tests.
-    private readonly TestcontainersContainer _testcontainersContainer;
 
-    public ClientFactory()
+    public ClientFactory(IDbConnectionFactory dbConnectionFactory)
     {
-        var port = new Port();
-
-        _dbConnectionFactory = new DbConnectionFactory(
-            $"Server=localhost,{port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
-
-        var image = Image.Get();
-        
-        _testcontainersContainer =
-            new TestcontainersBuilder<TestcontainersContainer>()
-                .WithImage(image)
-                .WithPortBinding(port.Number, 1433)
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
-                .Build();
+        _dbConnectionFactory = dbConnectionFactory;
     }
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(x =>
@@ -47,15 +32,5 @@ public class ClientFactory : WebApplicationFactory<IApiMarker>
     public HttpClient GetClient()
     {
         return CreateClient();
-    }
-    
-    public async Task StartContainerAsync()
-    {
-        await _testcontainersContainer.StartAsync();
-    }
-    
-    public async Task StopContainerAsync()
-    {
-        await _testcontainersContainer.StopAsync();
     }
 }
