@@ -6,8 +6,8 @@ namespace Weather.API.IntegrationTests.SF.SystemSetup;
 
 public static class Image
 {
-    private static ImageFromDockerfileBuilder _builder = new ImageFromDockerfileBuilder();
-    private static string _image;
+    private static readonly ImageFromDockerfileBuilder _builder = new();
+    private static readonly string _image;
 
     static Image()
     {
