@@ -11,13 +11,13 @@ public static class TestBuilder
     public static async Task BuildAndStartContainerAsync(IObjectContainer objectContainer, FeatureContext featureContext)
     {
         var dbContainerFactory = new DbContainerFactory();
-        var dbConnectionFactoryPortNumber = dbContainerFactory.BuildDbContainer();
+        var dbConnectionFactoryPortNumber = await dbContainerFactory.BuildDbContainerAsync();
         
         var containerAndDbConnectionFactory = dbContainerFactory
             .GetContainerAndDbConnectionFactory(dbConnectionFactoryPortNumber);
         
         var client = new ClientFactory(containerAndDbConnectionFactory.Item1);
-
+        
         var weatherClient = new WeatherClient(client.GetClient());
         
         objectContainer.RegisterInstanceAs(weatherClient, featureContext.FeatureInfo.Title);

@@ -9,14 +9,14 @@ public class DbContainerFactory
 {
     private readonly ConcurrentDictionary<int, (IDbConnectionFactory, TestcontainersContainer)> _dbConnectionFactories = new();
 
-    public int BuildDbContainer()
+    public async Task<int> BuildDbContainerAsync()
     {
         var port = new Port();
 
         var dbConnectionFactory = new DbConnectionFactory(
             $"Server=localhost,{port.Number};Initial Catalog=WeatherDatabase;User Id=sa;Password=Passw0rd!!;TrustServerCertificate=true;");
 
-        var image = Image.Get();
+        var image = await Image.GetAsync();
 
         var testcontainersContainer = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage(image)

@@ -7,21 +7,19 @@ namespace Weather.API.IntegrationTests.SF.SystemSetup;
 public static class Image
 {
     private static readonly ImageFromDockerfileBuilder _builder = new();
-    private static readonly string _image;
+    private static string _image;
 
-    static Image()
+    public static async Task<string> GetAsync()
     {
-        _image = _builder
-            .WithDockerfileDirectory("../../../../Weather.Database")
-            .WithBuildArgument("PASSWORD", "Passw0rd!!")
-            .WithDeleteIfExists(true)
-            .Build()
-            .GetAwaiter()
-            .GetResult();
-    }
-
-    public static string Get()
-    {
+        if (string.IsNullOrEmpty(_image))
+        {
+            _image = await _builder
+                .WithDockerfileDirectory("../../../../Weather.Database")
+                .WithBuildArgument("PASSWORD", "Passw0rd!!")
+                .WithDeleteIfExists(true)
+                .Build();
+        }
+        
         return _image;
     }
 }
