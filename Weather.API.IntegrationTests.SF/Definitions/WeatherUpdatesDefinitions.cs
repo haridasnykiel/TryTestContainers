@@ -49,7 +49,7 @@ public sealed class WeatherUpdatesDefinitions
     [Then(@"the new weather update is included with:")]
     public void ThenTheNewWeatherUpdateIsIncludedWith(Table table)
     {
-        var expected = table.CreateSet<WeatherForecast>();
+        var expectedResults = table.CreateSet<WeatherForecast>();
         var isFound = _context.TryGetValue("forecasts", out var actual);
 
         if (!isFound)
@@ -59,14 +59,14 @@ public sealed class WeatherUpdatesDefinitions
 
         var actualResults = actual as IEnumerable<WeatherForecast>;
 
-        foreach (var actualResult in actualResults)
+        foreach (var expectedResult in expectedResults)
         {
-            var result = expected.FirstOrDefault(x =>
-                x.Date == actualResult.Date && 
-                x.TemperatureC == actualResult.TemperatureC &&
-                x.Summary == actualResult.Summary);
+            var actualResult = actualResults.FirstOrDefault(x =>
+                x.Date == expectedResult.Date && 
+                x.TemperatureC == expectedResult.TemperatureC);
 
-            result.Should().NotBeNull();
+            actualResult.Should().NotBeNull();
+            actualResult.Summary.Should().Be(expectedResult.Summary);
         }
     }
 

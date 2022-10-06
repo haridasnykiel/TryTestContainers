@@ -23,14 +23,14 @@ public class DbContainerFactory
             .WithPortBinding(port.Number, 1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(1433))
             .Build();
-        
+
         var isAdded = _dbConnectionFactories.TryAdd(port.Number, (dbConnectionFactory, testcontainersContainer));
 
         if (!isAdded)
         {
             throw new InvalidOperationException($"Port number has already been used {port.Number}");
         }
-
+        
         return port.Number;
     }
 

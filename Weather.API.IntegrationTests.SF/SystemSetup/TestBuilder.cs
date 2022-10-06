@@ -1,8 +1,11 @@
 ﻿using BoDi;
 using DotNet.Testcontainers.Containers;
+using NUnit.Framework;
 using TechTalk.SpecFlow;
 
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 namespace Weather.API.IntegrationTests.SF.SystemSetup;
+
 
 [Binding]
 public static class TestBuilder
@@ -10,6 +13,7 @@ public static class TestBuilder
     [BeforeFeature]
     public static async Task BuildAndStartContainerAsync(IObjectContainer objectContainer, FeatureContext featureContext)
     {
+        
         var dbContainerFactory = new DbContainerFactory();
         var dbConnectionFactoryPortNumber = await dbContainerFactory.BuildDbContainerAsync();
         
