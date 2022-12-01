@@ -29,7 +29,7 @@ ENV SA_PASSWORD=$PASSWORD
 # Launch SQL Server, confirm startup is complete, deploy the DACPAC, then terminate SQL Server.
 # See https://stackoverflow.com/a/51589787/488695
 RUN ( /opt/mssql/bin/sqlservr & ) | grep -q "Service Broker manager has started" \
-    && /opt/sqlpackage/sqlpackage /a:Publish /tsn:localhost /tdn:${DBNAME} /tu:sa /tp:$SA_PASSWORD /sf:/tmp/db/Weather.Database.dacpac \
+    && /opt/sqlpackage/sqlpackage /a:Publish /tsn:localhost /tdn:${DBNAME} /tu:sa /tp:$SA_PASSWORD /TargetEncryptConnection:False /sf:/tmp/db/Weather.Database.dacpac \
     && rm -r /tmp/db \
     && pkill sqlservr \
     && rm -r /opt/sqlpackage 

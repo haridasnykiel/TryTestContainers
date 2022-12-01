@@ -19,9 +19,10 @@ public static class Image
             if (string.IsNullOrEmpty(_image))
             {
                 _image = await _builder
-                    .WithDockerfileDirectory("../../../../Weather.Database")
+                    .WithName(Guid.NewGuid().ToString())
+                    .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), "Weather.Database")
+                    .WithDockerfile("Dockerfile")
                     .WithBuildArgument("PASSWORD", "Passw0rd!!")
-                    .WithDeleteIfExists(true)
                     .Build();
             }
         }
